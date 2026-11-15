@@ -1,0 +1,35 @@
+[mod]
+id      = "0015-arp-locks"
+title   = "ARP locks: p-lock the ARP page's controls per trig"
+
+# Not in the default build. OS 1.56. Its code sits in space 0006 / 0007 claim, and it
+# detours the encoder call 0008 does, so it cannot share an image with them.
+enabled  = false
+excludes = ["0007-digital-path", "0008-pages", "0010-wave-osc", "0012-res-limit"]
+
+# re-only | built | hardware-verified | retracted
+status  = "hardware-verified"
+
+summary = """
+Hold a trig and turn an ARP page control (MODE, SPEED, RANGE, N.LEN, LEGATO, NOTE 2-4)
+to lock it on that trig, as with any sound parameter; the value shows while the trig
+is held, clears the stock way, and is saved with the pattern. When the trig plays,
+the arpeggiator on that track uses the locked settings until the next trig, and a
+trig without ARP locks goes back to the page's values.
+
+The locks use lock slots 101..108 of the step's lock block, which no sound parameter
+uses; the pattern's save and load already cover them. Stock edits a held trig's
+locks in a temporary sound that only has room for the sound parameters, so ARP locks
+are written and shown straight from the pattern's lock words (v0.2; v0.1 went
+through the stock routines and never stored them). The apply routine takes the slots
+out before the sound engine sees them; the arpeggiator reads its settings through a
+per-track copy of the track data with the locked values in. v0.5 adds two switches on the ARP page's empty knobs: I = SLD (the active track's
+303 slide, 0002) and J = MPE on/off (0013); both save with the kit (0006). Source: arpl.c and
+hook.s; gen.sh regenerates stub.s.
+"""
+
+[sources]
+stub = "stub.s"
+
+[requires]
+symbols = []

@@ -1,0 +1,285 @@
+# ---------------------------------------------------------------- 0015-arp-locks
+# P-locks for the ARP page (ids 11..18 -> lock slots 101..108, which no sound
+# parameter uses and the pattern already saves). Code placed by mods/0015-arp-locks/
+# pack.py in the gaps 0007 leaves (0015 excludes it). State: free DDR 0x4680e200.
+#
+# The UI (v0.5): stock edits held-trig locks in a temporary sound whose value array
+# only covers the sound parameters, so an ARP lock is written and read in the
+# pattern's lock words directly: the encoder's held-trig call (0x40025a06),
+# page_get_value (0x400239e2), the knob drawer's knob_value (0x40024b42: value and the inverted "locked" style) and the lock-clear routine (0x40023a80) hand ARP ids
+# with a trig held to arpl_held / arpl_pgv / arpl_clear. The engine: the lock apply
+# routine (0x40077ad2) takes the ARP slots out and notes them per track; the
+# arpeggiator's five `adda.l #0x4096ff52` (its track-data base) go through
+# arpl_base, which hands back a copy with the locked values in while a lock is active.
+#
+# v0.5: knobs I and J of the ARP page (descriptor ids 9 and 10, stock 0) become
+# switches on the blank placeholder ids 276 / 277: SLD (0002's per-track 303 slide,
+# kit FX byte 26 + 6t + 5) and MPE on/off (0013, kit FX byte 52), saved by 0006.
+# Their value, dial, name and text, and their encoder, go through 0015's gates.
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x400550a8
+size    = 0x118
+section = ".c_arpl_held"
+note    = ".c_arpl_held (cave6)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40060cb4
+size    = 0xbc
+section = ".c_arpl_apply"
+note    = ".c_arpl_apply (cave11)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40074530
+size    = 0x28
+section = ".c_arpl_sname"
+note    = ".c_arpl_sname (cave26)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40086ce8
+size    = 0xd4
+section = ".c_arpl_base"
+note    = ".c_arpl_base (cave9)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40086dbc
+size    = 0x14
+section = ".r_misc"
+note    = ".r_misc (cave9)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x4008e264
+size    = 0xb4
+section = ".c_arpl_clear"
+note    = ".c_arpl_clear (cave5)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x4008e318
+size    = 0xa0
+section = ".c_arpl_pgv"
+note    = ".c_arpl_pgv (cave5)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40090e1c
+size    = 0x2c
+section = ".c_recount"
+note    = ".c_recount (cave10)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x400952b0
+size    = 0x6c
+section = ".c_arpl_label"
+note    = ".c_arpl_label (cave27)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x4009a438
+size    = 0x34
+section = ".c_arpl_sw_enc"
+note    = ".c_arpl_sw_enc (cave8)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x400a12b8
+size    = 0x30
+section = ".c_sw_on"
+note    = ".c_sw_on (cave21)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x400a12e8
+size    = 0x10
+section = ".r_field"
+note    = ".r_field (cave21)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x401377c8
+size    = 0x48
+section = ".c_init.part.0"
+note    = ".c_init.part.0 (cave28)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x401eeef0
+size    = 0x18
+section = ".c_arpl_sw_dial"
+note    = ".c_arpl_sw_dial (cave3)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40234cc8
+size    = 0x230
+section = ".c_arpl_gates"
+note    = ".c_arpl_gates (cave)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40234ef8
+size    = 0x4c
+section = ".c_sw_byte"
+note    = ".c_sw_byte (cave)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40234fdc
+size    = 0x20
+section = ".c_pattern"
+note    = ".c_pattern (cave)."
+
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x4009bac4
+size   = 6
+expect = "2f032f02242f0014"
+entry  = "arpl_lbl_gate"
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x4009b7be
+size   = 6
+expect = "202f00080c8000000127"
+entry  = "arpl_sname_gate"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x40025a56
+size        = 2
+expect      = "2068"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x40025a58
+size        = 4
+expect      = "00584e90"
+from_symbol = "arpl_enc_gate"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x4019504c
+size        = 8
+expect      = "0000000000000000"
+replace     = "0000011400000115"
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x40024b42
+size   = 6
+expect = "4fefffcc48d73c0c"
+entry  = "arpl_kv_gate"
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x40077ad2
+size   = 6
+expect = "4fefffc048d77cfc"
+entry  = "arpl_apply_gate"
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x400239e2
+size   = 6
+expect = "4feffff448d7040c"
+entry  = "arpl_pgv_gate"
+
+[[detour]]
+owner  = "0015-arp-locks"
+addr   = 0x40023a80
+size   = 6
+expect = "4fefffe048d70c0c"
+entry  = "arpl_clear_gate"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x40025a06
+size        = 2
+expect      = "2068"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x40025a08
+size        = 4
+expect      = "007c4e90"
+from_symbol = "arpl_held_gate"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f399e
+size        = 2
+expect      = "d5fc"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f39a0
+size        = 4
+expect      = "4096ff52"
+from_symbol = "arpl_base_a2"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f3c16
+size        = 2
+expect      = "d5fc"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f3c18
+size        = 4
+expect      = "4096ff52"
+from_symbol = "arpl_base_a2"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f40aa
+size        = 2
+expect      = "d5fc"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f40ac
+size        = 4
+expect      = "4096ff52"
+from_symbol = "arpl_base_a2"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f44b8
+size        = 2
+expect      = "d5fc"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f44ba
+size        = 4
+expect      = "4096ff52"
+from_symbol = "arpl_base_a2"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f3e9a
+size        = 2
+expect      = "d1fc"
+replace     = "4eb9"
+
+[[patch]]
+owner       = "0015-arp-locks"
+addr        = 0x400f3e9c
+size        = 4
+expect      = "4096ff52"
+from_symbol = "arpl_base_a0"
