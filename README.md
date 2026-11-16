@@ -16,10 +16,12 @@ the stock OS with that framework. No Elektron OS files are included here.
   - When the trig plays, that track's arpeggiator uses the locked settings until the
     next trig; a trig without ARP locks goes back to the page's values.
   - Locks are saved with the pattern and clear the stock way.
-- **Two switches on the ARP page's empty knobs**, saved with the kit:
+- **Two switches on the ARP page's empty knobs**, drawn with LEGATO's on/off switch
+  graphic and saved with the kit:
   - **I — SLD:** per-track 303 slide for `0002-slide-303` (ON: put the slide trig on the
-    note you glide *from*; OFF: stock slide). Synth tracks only.
-  - **J — MPE:** MPE on/off for [a4mk1-mpe](https://github.com/ClaidArremer/a4mk1-mpe).
+    note you glide *from*; OFF: stock slide). Synth tracks only; off by default.
+  - **J — MPE:** MPE on/off for [a4mk1-mpe](https://github.com/ClaidArremer/a4mk1-mpe);
+    off by default, so turn it on in each kit you play with an MPE controller.
 
 ## How it works (short)
 
@@ -40,15 +42,18 @@ with the locked values in. Details are in the comments of `arpl.c`, `hook.s` and
 4. Build, e.g. with MPE and slide:
 
    ```
-   make custom MODS="0001-scale-lock 0002-slide-303 0006-fx-slot 0011-rand-track 0013-mpe 0015-arp-locks" TAG=arplocks
+   make custom MODS="0001-scale-lock 0002-slide-303 0006-fx-slot 0011-rand-track 0013-mpe 0015-arp-locks" PARAMS="0013-mpe:kit_switch=1" TAG=arplocks
    ```
 
    - Include `0006-fx-slot` so the SLD / MPE switches are saved with the kit.
    - Build `0002-slide-303` with its default `always_on = 0` so SLD works.
+   - Build `0013-mpe` with `kit_switch=1` so the MPE switch works (without it MPE ignores
+     the switch and is always available).
    - 0015 cannot share an image with `0007-digital-path`, `0008-pages`,
      `0010-wave-osc` or `0012-res-limit` (shared code space and hook points).
-   - The code placement in the registry block was made for the mod set above; with a
-     different set, re-run `mods/0015-arp-locks/pack.py` to place it.
+   - The code placement in the registry blocks was made for the mod set above (with the
+     current a4mk1-mpe); with a different set, re-run `mods/0015-arp-locks/pack.py` to
+     place it.
 
 `gen.sh` regenerates `stub.s` from `arpl.c` and `hook.s` (needs an m68k gcc);
 `test_host.c` runs the engine-side logic on a computer.

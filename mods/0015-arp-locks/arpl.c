@@ -180,8 +180,8 @@ int arpl_clear(u8 *view, u32 id)
 /* ---------------------------------------------------------------- switches
  * The ARP page's two empty knobs (I and J) hold switches, on ids 276 and 277 (blank
  * placeholder records no page uses): I = SLD, the track's 303 slide (0002, kit FX
- * storage byte 26 + 6t + 5, as 0007 kept it), J = MPE on/off for 0013 (byte 52, 0 =
- * on). Both live in the kit's FX storage, which 0006 saves with the kit. */
+ * storage byte 26 + 6t + 5, as 0007 kept it), J = MPE on/off for 0013 (byte 52, nonzero
+ * = on, so kits start with MPE off; 0013 built with kit_switch = 1). Both live in the kit's FX storage, which 0006 saves with the kit. */
 #define ID_SLD      276
 #define ID_MPE      277
 #define PROJECT_PTR 0x415cba28u
@@ -211,13 +211,14 @@ static int sw_on(u32 id)
     u8 *b = sw_byte(id);
     if (!b)
         return 0;
-    return id == ID_MPE ? !*b : *b != 0;
+    return *b != 0;
 }
 
-/* The dial: full when on. */
+/* The value the knob shows: 0 / 0x100, LEGATO's off / on, so the switch graphic
+ * (drawn as LEGATO's, see arpl_draw_gate) matches. */
 int arpl_sw_dial(u32 id)
 {
-    return sw_on(id) ? 0x7f00 : 0;
+    return sw_on(id) ? 0x100 : 0;
 }
 
 /* The encoder: right turns it on, left off. */
@@ -229,7 +230,7 @@ void arpl_sw_enc(u32 id, int delta)
     if (!b || !delta)
         return;
     on = delta > 0;
-    *b = (u8)(id == ID_MPE ? !on : on);
+    *b = (u8)on;
 }
 
 const char *arpl_sname(u32 id)

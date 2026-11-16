@@ -180,6 +180,34 @@ arpl_sname_gate:
         jmp     0x4009b7c8
 
         | ------------------------------------------------------------------
+        | The knob draw's graphic call (0x400231ec: container +0x90 (cont, id,
+        | value, ...)): the switches are drawn as LEGATO (id 15), the ARP page's
+        | own on/off switch. Only the graphic; the name and value text keep the
+        | switch's own id. Displaced: movea.l (%a2),%a0; move.l %a4,-(%sp);
+        | move.l %a3,-(%sp).
+        | ------------------------------------------------------------------
+        .globl  arpl_draw_gate
+arpl_draw_gate:
+        movea.l (%a2),%a0
+        move.l  %a4,-(%sp)
+        move.l  %a3,-(%sp)
+        cmpi.l  #276,%d3
+        beq.b   1f
+        cmpi.l  #277,%d3
+        beq.b   1f
+        jmp     0x400231f2                        | anything else: stock
+1:      move.l  %d2,-(%sp)                        | a switch: stock's call,
+        move.l  0x20(%a6),-(%sp)                  | with id 15
+        mvz.b   0x24c(%a5),%d0
+        move.l  %d0,-(%sp)
+        move.l  %d5,-(%sp)
+        pea     15.w
+        move.l  %a2,-(%sp)
+        movea.l 0x90(%a0),%a0
+        jsr     (%a0)
+        jmp     0x4002320a
+
+        | ------------------------------------------------------------------
         | The lock apply routine (0x40077ad2) at entry, (track, out, locks, x)
         | pushed. arpl_apply notes the ARP slots and may hand back a copy of
         | the list without them. Then the displaced prologue.
