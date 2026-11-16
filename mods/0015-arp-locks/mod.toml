@@ -1,6 +1,6 @@
 [mod]
 id      = "0015-arp-locks"
-title   = "ARP locks: p-lock the ARP page's controls per trig"
+title   = "ARP locks: p-lock the ARP page's controls per trig (+ MPE switch)"
 
 # Not in the default build. OS 1.56. Its code sits in space 0006 / 0007 claim, and it
 # detours the encoder call 0008 does, so it cannot share an image with them.
@@ -23,8 +23,8 @@ locks in a temporary sound that only has room for the sound parameters, so ARP l
 are written and shown straight from the pattern's lock words (v0.2; v0.1 went
 through the stock routines and never stored them). The apply routine takes the slots
 out before the sound engine sees them; the arpeggiator reads its settings through a
-per-track copy of the track data with the locked values in. v0.5 adds two switches on the ARP page's empty knobs: I = SLD (the active track's
-303 slide, 0002) and J = MPE on/off (0013); both save with the kit (0006). Source: arpl.c and
+per-track copy of the track data with the locked values in. Knob J, empty on the stock ARP page, becomes an MPE on/off switch for 0013 (off by
+default, saved with the kit by 0006, drawn like LEGATO's switch). Source: arpl.c and
 hook.s; gen.sh regenerates stub.s.
 """
 

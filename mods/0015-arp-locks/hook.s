@@ -12,8 +12,6 @@
         .globl  arpl_held_gate
 arpl_held_gate:
         move.l  8(%sp),%d0
-        cmpi.l  #276,%d0
-        beq.b   3f
         cmpi.l  #277,%d0
         beq.b   3f
         subi.l  #11,%d0
@@ -41,8 +39,6 @@ arpl_held_gate:
         .globl  arpl_pgv_gate
 arpl_pgv_gate:
         move.l  8(%sp),%d0
-        cmpi.l  #276,%d0
-        beq.b   5f
         cmpi.l  #277,%d0
         beq.b   5f
         subi.l  #11,%d0
@@ -94,8 +90,6 @@ arpl_clear_gate:
         .globl  arpl_kv_gate
 arpl_kv_gate:
         move.l  8(%sp),%d0
-        cmpi.l  #276,%d0
-        beq.b   4f
         cmpi.l  #277,%d0
         beq.b   4f
         subi.l  #11,%d0
@@ -134,8 +128,6 @@ arpl_kv_gate:
         .globl  arpl_enc_gate
 arpl_enc_gate:
         move.l  8(%sp),%d0
-        cmpi.l  #276,%d0
-        beq.b   1f
         cmpi.l  #277,%d0
         beq.b   1f
         movea.l 0x58(%a0),%a0
@@ -191,8 +183,6 @@ arpl_draw_gate:
         movea.l (%a2),%a0
         move.l  %a4,-(%sp)
         move.l  %a3,-(%sp)
-        cmpi.l  #276,%d3
-        beq.b   1f
         cmpi.l  #277,%d3
         beq.b   1f
         jmp     0x400231f2                        | anything else: stock

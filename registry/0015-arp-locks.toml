@@ -12,14 +12,11 @@
 # arpeggiator's five `adda.l #0x4096ff52` (its track-data base) go through
 # arpl_base, which hands back a copy with the locked values in while a lock is active.
 #
-# v0.5: knobs I and J of the ARP page (descriptor ids 9 and 10, stock 0) become
-# switches on the blank placeholder ids 276 / 277: SLD (0002's per-track 303 slide,
-# kit FX byte 26 + 6t + 5) and MPE on/off (0013, kit FX byte 52), saved by 0006. v0.6: both drawn
-# with LEGATO's on/off switch graphic (the knob draw's graphic call, 0x400231ec, gets
-# id 15 for them); MPE now defaults to off (0013 built with kit_switch = 1).
-# Their value, dial, name and text, and their encoder, go through 0015's gates.
-
-
+# The MPE switch: knob J of the ARP page (descriptor id 10, stock 0) becomes a switch on
+# the blank placeholder id 277: MPE on/off for 0013 (kit FX byte 52, nonzero = on, saved
+# by 0006; 0013 built with kit_switch = 1). Its value, name and text, and its encoder,
+# go through 0015's gates; it is drawn with LEGATO's on/off switch graphic (the knob
+# draw's graphic call, 0x400231ec, gets id 15 for it).
 [[cave]]
 owner   = "0015-arp-locks"
 addr    = 0x400550a8
@@ -36,17 +33,10 @@ note    = ".c_arpl_apply (cave11)."
 
 [[cave]]
 owner   = "0015-arp-locks"
-addr    = 0x4006fc88
-size    = 0x74
-section = ".c_arpl_label"
-note    = ".c_arpl_label (cave25)."
-
-[[cave]]
-owner   = "0015-arp-locks"
 addr    = 0x40074530
 size    = 0x28
-section = ".c_arpl_sname"
-note    = ".c_arpl_sname (cave26)."
+section = ".c_sw_byte"
+note    = ".c_sw_byte (cave26)."
 
 [[cave]]
 owner   = "0015-arp-locks"
@@ -54,6 +44,20 @@ addr    = 0x40086ce8
 size    = 0xd4
 section = ".c_arpl_base"
 note    = ".c_arpl_base (cave9)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40086dbc
+size    = 0x10
+section = ".r_field"
+note    = ".r_field (cave9)."
+
+[[cave]]
+owner   = "0015-arp-locks"
+addr    = 0x40086dcc
+size    = 0xc
+section = ".r_misc"
+note    = ".r_misc (cave9)."
 
 [[cave]]
 owner   = "0015-arp-locks"
@@ -78,10 +82,17 @@ note    = ".c_recount (cave10)."
 
 [[cave]]
 owner   = "0015-arp-locks"
+addr    = 0x400916c4
+size    = 0x244
+section = ".c_arpl_gates"
+note    = ".c_arpl_gates (cave2)."
+
+[[cave]]
+owner   = "0015-arp-locks"
 addr    = 0x400952b0
 size    = 0x4c
-section = ".c_sw_byte"
-note    = ".c_sw_byte (cave27)."
+section = ".c_arpl_label"
+note    = ".c_arpl_label (cave27)."
 
 [[cave]]
 owner   = "0015-arp-locks"
@@ -107,23 +118,9 @@ note    = ".c_arpl_sw_dial (cave28)."
 [[cave]]
 owner   = "0015-arp-locks"
 addr    = 0x401eeef0
-size    = 0x14
-section = ".r_misc"
-note    = ".r_misc (cave3)."
-
-[[cave]]
-owner   = "0015-arp-locks"
-addr    = 0x40234cc8
-size    = 0x26c
-section = ".c_arpl_gates"
-note    = ".c_arpl_gates (cave)."
-
-[[cave]]
-owner   = "0015-arp-locks"
-addr    = 0x40234f34
-size    = 0x10
-section = ".r_field"
-note    = ".r_field (cave)."
+size    = 0x18
+section = ".c_arpl_sname"
+note    = ".c_arpl_sname (cave3)."
 
 [[cave]]
 owner   = "0015-arp-locks"
@@ -169,10 +166,10 @@ from_symbol = "arpl_enc_gate"
 
 [[patch]]
 owner       = "0015-arp-locks"
-addr        = 0x4019504c
-size        = 8
-expect      = "0000000000000000"
-replace     = "0000011400000115"
+addr        = 0x40195050
+size        = 4
+expect      = "00000000"
+replace     = "00000115"
 
 [[detour]]
 owner  = "0015-arp-locks"

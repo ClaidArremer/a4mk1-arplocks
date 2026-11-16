@@ -16,12 +16,9 @@ the stock OS with that framework. No Elektron OS files are included here.
   - When the trig plays, that track's arpeggiator uses the locked settings until the
     next trig; a trig without ARP locks goes back to the page's values.
   - Locks are saved with the pattern and clear the stock way.
-- **Two switches on the ARP page's empty knobs**, drawn with LEGATO's on/off switch
-  graphic and saved with the kit:
-  - **I — SLD:** per-track 303 slide for `0002-slide-303` (ON: put the slide trig on the
-    note you glide *from*; OFF: stock slide). Synth tracks only; off by default.
-  - **J — MPE:** MPE on/off for [a4mk1-mpe](https://github.com/ClaidArremer/a4mk1-mpe);
-    off by default, so turn it on in each kit you play with an MPE controller.
+- **MPE on/off switch** for [a4mk1-mpe](https://github.com/ClaidArremer/a4mk1-mpe) on
+  the ARP page's empty knob J, drawn like LEGATO's on/off switch and saved with the kit.
+  Off by default, so turn it on in each kit you play with an MPE controller.
 
 ## How it works (short)
 
@@ -39,14 +36,13 @@ with the locked values in. Details are in the comments of `arpl.c`, `hook.s` and
    its BUILD.md (you supply the stock OS 1.56 yourself).
 2. Copy `mods/0015-arp-locks` into its `mods/` folder.
 3. Append `registry/0015-arp-locks.toml` to its `registry/allocations.toml`.
-4. Build, e.g. with MPE and slide:
+4. Build, e.g. with MPE:
 
    ```
-   make custom MODS="0001-scale-lock 0002-slide-303 0006-fx-slot 0011-rand-track 0013-mpe 0015-arp-locks" PARAMS="0013-mpe:kit_switch=1" TAG=arplocks
+   make custom MODS="0001-scale-lock 0006-fx-slot 0011-rand-track 0013-mpe 0015-arp-locks" PARAMS="0013-mpe:kit_switch=1" TAG=arplocks
    ```
 
-   - Include `0006-fx-slot` so the SLD / MPE switches are saved with the kit.
-   - Build `0002-slide-303` with its default `always_on = 0` so SLD works.
+   - Include `0006-fx-slot` so the MPE switch is saved with the kit.
    - Build `0013-mpe` with `kit_switch=1` so the MPE switch works (without it MPE ignores
      the switch and is always available).
    - 0015 cannot share an image with `0007-digital-path`, `0008-pages`,

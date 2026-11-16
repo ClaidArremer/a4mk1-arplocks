@@ -178,15 +178,12 @@ int arpl_clear(u8 *view, u32 id)
 }
 
 /* ---------------------------------------------------------------- switches
- * The ARP page's two empty knobs (I and J) hold switches, on ids 276 and 277 (blank
- * placeholder records no page uses): I = SLD, the track's 303 slide (0002, kit FX
- * storage byte 26 + 6t + 5, as 0007 kept it), J = MPE on/off for 0013 (byte 52, nonzero
- * = on, so kits start with MPE off; 0013 built with kit_switch = 1). Both live in the kit's FX storage, which 0006 saves with the kit. */
-#define ID_SLD      276
+ * The ARP page's empty knob J holds the MPE on/off switch for 0013, on id 277 (a blank
+ * placeholder record no page uses): byte 52 of the kit's FX storage, nonzero = on, so
+ * kits start with MPE off (0013 built with kit_switch = 1). 0006 saves it with the kit. */
 #define ID_MPE      277
 #define PROJECT_PTR 0x415cba28u
 #define KIT_FX      4404            /* project + this: the FX track's storage */
-#define ACTIVE_TRK  0x415af866u
 
 static u8 *kit_fx(void)
 {
@@ -197,13 +194,12 @@ static u8 *kit_fx(void)
 static u8 *sw_byte(u32 id)
 {
     u8 *k = kit_fx();
-    u32 t = *(volatile u32 *)ACTIVE_TRK;
 
     if (!k)
         return 0;
     if (id == ID_MPE)
         return k + 52;
-    return t < 4 ? k + 26 + 6 * t + 5 : 0;      /* SLD: synth tracks only */
+    return 0;
 }
 
 static int sw_on(u32 id)
@@ -235,19 +231,17 @@ void arpl_sw_enc(u32 id, int delta)
 
 const char *arpl_sname(u32 id)
 {
-    return id == ID_SLD ? "SLD" : id == ID_MPE ? "MPE" : 0;
+    return id == ID_MPE ? "MPE" : 0;
 }
 
 int arpl_label(u32 id, char *out)
 {
     const char *t;
 
-    if (id != ID_SLD && id != ID_MPE)
-        return 0;
-    if (id == ID_SLD && !sw_byte(id))
-        t = "--";
-    else
+    if (id == ID_MPE)
         t = sw_on(id) ? "ON" : "OFF";
+    else
+        return 0;
     while ((*out++ = *t++))
         ;
     return 1;
